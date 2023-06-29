@@ -1,7 +1,7 @@
 import Counter from './counter';
 
 const Counters = (props) => {
-  const { onReset, counters, onDelete, onIncrement } = props;
+  const { onReset, counters, onDelete, onIncrement, onDecrement } = props;
   return (
     <>
       <button onClick={onReset} className="btn btn-info btn-md m-2">
@@ -13,6 +13,7 @@ const Counters = (props) => {
           onDelete={onDelete}
           counter={counter} // { id: 1, value: 4 }
           onIncrement={onIncrement}
+          onDecrement={onDecrement}
         />
       ))}
     </>
