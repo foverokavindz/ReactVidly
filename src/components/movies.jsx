@@ -7,7 +7,7 @@ import ListGroup from './common/listGroup';
 import MoviesTable from './moviesTable';
 
 const Movies = () => {
-  const [allMovies, setAllMovies] = useState([]);
+  const [allMovies, setAllMovies] = useState([]); // [{key:Value}, {}, {}, {}, {}]
   const [genres, setGenres] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(4);
@@ -31,10 +31,23 @@ const Movies = () => {
   };
 
   const handleLike = (movie) => {
+    /*
+        {
+          _id: "5b21ca3eeb7f6fbccd471816",
+          title: "Die Hard",
+          genre: { _id: "5b21ca3eeb7f6fbccd471818", name: "Action" },
+          numberInStock: 5,
+          dailyRentalRate: 2.5
+        } 
+    */
+    console.log('toLeaern - Like button clicked', movie);
     const updatedMovies = [...allMovies];
+    console.log('updatedMovies', updatedMovies);
     const index = updatedMovies.indexOf(movie);
+    console.log('index', index);
+
     updatedMovies[index] = { ...updatedMovies[index] };
-    updatedMovies[index].liked = !updatedMovies[index].liked;
+    updatedMovies[index].liked = !updatedMovies[index].liked; // true -> false or false->true
     setAllMovies(updatedMovies);
   };
 
@@ -56,7 +69,9 @@ const Movies = () => {
       ? allMovies.filter((m) => m.genre._id === selectedGenre._id)
       : allMovies;
 
+  console.log('filtered', filtered);
   const movies = paginate(filtered, currentPage, pageSize);
+  console.log('movies', movies);
 
   return (
     <div className="row p-4">
