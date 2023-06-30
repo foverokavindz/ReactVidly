@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Navbar from './components/navbar';
 import Counters from './components/counters';
-//import Movies from './components/movies';
+import Movies from './components/movies';
 //import './App.css';
 
 class App extends Component {
@@ -48,6 +48,8 @@ class App extends Component {
   render() {
     return (
       // Counter ------------
+
+      /*
       <>
         <Navbar
           totalCounters={this.state.counters.filter((c) => c.value > 0).length}
@@ -63,13 +65,12 @@ class App extends Component {
         </main>
       </>
 
+      */
       // movie   ------------
 
-      /*      
       <main className="container">
         <Movies />
       </main>
-      */
     );
   }
 }
