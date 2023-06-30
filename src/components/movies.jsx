@@ -1,30 +1,39 @@
 import React, { Component } from 'react';
 import { getMovies } from '../services/fakeMovieService';
 import Like from './common/like';
+import Pagination from './common/pagination';
+import { paginate } from '../utils/pagination';
 
 class Movies extends Component {
   state = {
-    movies: getMovies(),
+    allMovies: getMovies(),
+    currentPage: 1,
+    pageSize: 4,
   };
 
   handleDelete = (movie) => {
-    const movies = this.state.movies.filter((m) => m._id !== movie._id);
-    this.setState({ movies });
+    const allMovies = this.state.allMovies.filter((m) => m._id !== movie._id);
+    this.setState({ allMovies });
   };
 
   handleClick = (movie) => {
-    const movies = [...this.state.movies];
-    const index = movies.indexOf(movie);
-    movies[index] = { ...movies[index] };
-    movies[index].liked = !movies[index].liked;
-    this.setState({ movies });
+    const allMovies = [...this.state.allMovies];
+    const index = allMovies.indexOf(movie);
+    allMovies[index] = { ...allMovies[index] };
+    allMovies[index].liked = !allMovies[index].liked;
+    this.setState({ allMovies });
+  };
+
+  handlePageChange = (page) => {
+    this.setState({ currentPage: page });
   };
 
   render() {
-    const { length: count } = this.state.movies;
+    const { length: count } = this.state.allMovies;
+    const { allMovies, currentPage, pageSize } = this.state;
 
     if (count === 0) return <p>No movies in database</p>;
-
+    const movies = paginate(allMovies, currentPage, pageSize);
     return (
       <div>
         <p>Showing {count} movies in database</p>
@@ -40,7 +49,7 @@ class Movies extends Component {
             </tr>
           </thead>
           <tbody>
-            {this.state.movies.map((movie) => (
+            {movies.map((movie) => (
               <tr key={movie._id}>
                 <td>{movie.title}</td>
                 <td>{movie.genre.name}</td>
@@ -64,6 +73,12 @@ class Movies extends Component {
             ))}
           </tbody>
         </table>
+        <Pagination
+          itemsCount={count}
+          pageSize={pageSize}
+          currentPage={currentPage}
+          onPageChange={this.handlePageChange}
+        ></Pagination>
       </div>
     );
   }
