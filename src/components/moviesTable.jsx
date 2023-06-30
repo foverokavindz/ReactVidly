@@ -1,7 +1,7 @@
 import Like from './common/like';
 
 const MoviesTable = (props) => {
-  const { movies, handleClick, handleDelete } = props;
+  const { movies, onLike, onDelete, onSort } = props;
   return (
     <table className="table">
       <thead>
@@ -22,11 +22,11 @@ const MoviesTable = (props) => {
             <td>{movie.numberInStock}</td>
             <td>{movie.dailyRentalRate}</td>
             <td>
-              <Like liked={movie.liked} onClick={() => handleClick(movie)} />
+              <Like liked={movie.liked} onClick={() => onLike(movie)} />
             </td>
             <td>
               <button
-                onClick={() => handleDelete(movie)}
+                onClick={() => onDelete(movie)}
                 className="btn btn-danger btn-md"
               >
                 <i class="fa fa-trash-o"></i>
