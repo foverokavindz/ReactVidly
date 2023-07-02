@@ -1,10 +1,17 @@
 import Like from './common/like';
 import React, { useState } from 'react';
 import Table from './common/table';
+import { Link } from 'react-router-dom';
 
 const MoviesTable = ({ movies, onLike, onDelete, onSort, sortColumn }) => {
   const [columns] = useState([
-    { path: 'title', labal: 'Title' },
+    {
+      path: 'title',
+      labal: 'Title',
+      content: (movie) => (
+        <Link to={`/movies/${movie._id}`}>{movie.title}</Link>
+      ),
+    },
     { path: 'genre.name', labal: 'Genre' },
     { path: 'numberInStock', labal: 'Stock' },
     { path: 'dailyRentalRate', labal: 'State' },
