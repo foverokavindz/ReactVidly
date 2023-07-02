@@ -1,11 +1,10 @@
-const ListGroup = (props) => {
-  const {
-    items,
-    textProp /**/,
-    valueProp /* _id */,
-    selectedItem,
-    onItemSelect,
-  } = props;
+const ListGroup = ({
+  items,
+  textProp /**/,
+  valueProp /* _id */,
+  selectedItem,
+  onItemSelect,
+}) => {
   return (
     <ul class="list-group">
       {items.map((item) => (

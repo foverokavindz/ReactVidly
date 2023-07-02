@@ -5,6 +5,7 @@ import { paginate } from '../utils/pagination';
 import Pagination from './common/pagination';
 import ListGroup from './common/listGroup';
 import MoviesTable from './moviesTable';
+import _ from 'lodash';
 
 const Movies = () => {
   const [allMovies, setAllMovies] = useState([]); // [{key:Value}, {}, {}, {}, {}]
@@ -12,10 +13,11 @@ const Movies = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(4);
   const [selectedGenre, setSelectedGenre] = useState(null);
+  const [sortColumn, setSortColumn] = useState({ path: 'title', order: 'asc' });
 
   useEffect(() => {
     const fetchMoviesAndGenres = () => {
-      const genresData = [{ name: 'All Genres' }, ...getGenres()];
+      const genresData = [{ _id: '', name: 'All Genres' }, ...getGenres()];
       const moviesData = getMovies();
 
       setGenres(genresData);
@@ -26,29 +28,30 @@ const Movies = () => {
   }, []);
 
   const handleDelete = (movie) => {
-    const updatedMovies = allMovies.filter((m) => m._id !== movie._id);
-    setAllMovies(updatedMovies);
+    setAllMovies((prevMovies) => {
+      const index = prevMovies.findIndex((m) => m._id === movie._id);
+      if (index !== -1) {
+        const updatedMovies = [...prevMovies];
+        updatedMovies.splice(index, 1); // Remove the movie from the array
+        return updatedMovies;
+      }
+      return prevMovies;
+    });
   };
 
-  const handleLike = (movie) => {
-    /*
-        {
-          _id: "5b21ca3eeb7f6fbccd471816",
-          title: "Die Hard",
-          genre: { _id: "5b21ca3eeb7f6fbccd471818", name: "Action" },
-          numberInStock: 5,
-          dailyRentalRate: 2.5
-        } 
-    */
-    console.log('toLeaern - Like button clicked', movie);
-    const updatedMovies = [...allMovies];
-    console.log('updatedMovies', updatedMovies);
-    const index = updatedMovies.indexOf(movie);
-    console.log('index', index);
+  const handleSort = (updatedSortColumn) => {
+    setSortColumn(updatedSortColumn);
+  };
 
-    updatedMovies[index] = { ...updatedMovies[index] };
-    updatedMovies[index].liked = !updatedMovies[index].liked; // true -> false or false->true
-    setAllMovies(updatedMovies);
+  const handleLike = (movieId) => {
+    setAllMovies((prevMovies) => {
+      return prevMovies.map((movie) => {
+        if (movie._id === movieId) {
+          return { ...movie, liked: !movie.liked }; // Toggle liked status for selected movie
+        }
+        return movie;
+      });
+    });
   };
 
   const handlePageChange = (page) => {
@@ -64,14 +67,17 @@ const Movies = () => {
 
   if (count === 0) return <p>No movies in database</p>;
 
+  // 1
   const filtered =
     selectedGenre && selectedGenre._id
       ? allMovies.filter((m) => m.genre._id === selectedGenre._id)
       : allMovies;
 
-  console.log('filtered', filtered);
-  const movies = paginate(filtered, currentPage, pageSize);
-  console.log('movies', movies);
+  // 2
+  const sorted = _.orderBy(filtered, [sortColumn.path], [sortColumn.order]);
+
+  // 3
+  const movies = paginate(sorted, currentPage, pageSize);
 
   return (
     <div className="row p-4">
@@ -87,8 +93,10 @@ const Movies = () => {
 
         <MoviesTable
           movies={movies}
+          sortColumn={sortColumn}
           onLike={handleLike}
           onDelete={handleDelete}
+          onSort={handleSort}
         />
 
         <Pagination

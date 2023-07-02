@@ -1,11 +1,12 @@
-const Like = (props) => {
+const Like = ({ liked, onClick, movieId }) => {
   let classes = 'fa fa-heart';
-  if (!props.liked) classes += '-o';
+  if (!liked) classes += '-o';
   return (
     <i
       className={classes}
       style={{ cursor: 'pointer' }}
-      onClick={props.onClick}
+      onClick={onClick}
+      key={movieId}
     ></i>
   );
 };

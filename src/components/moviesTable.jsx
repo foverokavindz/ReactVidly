@@ -1,47 +1,44 @@
 import Like from './common/like';
+import React, { useState } from 'react';
+import Table from './common/table';
 
-const MoviesTable = (props) => {
-  const { movies, onLike, onDelete, onSort } = props;
+const MoviesTable = ({ movies, onLike, onDelete, onSort, sortColumn }) => {
+  const [columns] = useState([
+    { path: 'title', labal: 'Title' },
+    { path: 'genre.name', labal: 'Genre' },
+    { path: 'numberInStock', labal: 'Stock' },
+    { path: 'dailyRentalRate', labal: 'State' },
+    {
+      key: 'like',
+      content: (movie) => (
+        <Like
+          liked={movie.liked}
+          onClick={() => {
+            onLike(movie._id);
+          }}
+        />
+      ),
+    },
+    {
+      key: 'delete',
+      content: (movie) => (
+        <button
+          onClick={() => onDelete(movie)}
+          className="btn btn-danger btn-md"
+        >
+          <i class="fa fa-trash-o"></i>
+        </button>
+      ),
+    },
+  ]);
+
   return (
-    <table className="table">
-      <thead>
-        <tr>
-          <th>Title</th>
-          <th>Genra</th>
-          <th>Stock</th>
-          <th>Rate</th>
-          <th></th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        {movies.map((movie) => (
-          <tr key={movie._id}>
-            <td>{movie.title}</td>
-            <td>{movie.genre.name}</td>
-            <td>{movie.numberInStock}</td>
-            <td>{movie.dailyRentalRate}</td>
-            <td>
-              <Like
-                liked={movie.liked}
-                onClick={() => {
-                  onLike(movie);
-                  console.log('toLearn-movie', movie);
-                }}
-              />
-            </td>
-            <td>
-              <button
-                onClick={() => onDelete(movie)}
-                className="btn btn-danger btn-md"
-              >
-                <i class="fa fa-trash-o"></i>
-              </button>
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+    <Table
+      columns={columns}
+      data={movies}
+      sortColumn={sortColumn}
+      onSort={onSort}
+    />
   );
 };
 
